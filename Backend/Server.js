@@ -1,45 +1,56 @@
-const express = require('express');
-const nodemailer = require('nodemailer');
-const cors = require('cors');
-const bodyParser = require('body-parser');
+// Backend/server.js
+
+const express = require("express");
+const nodemailer = require("nodemailer");
+const cors = require("cors");
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
-app.use(cors());
-app.use(bodyParser.json());
+// Replace these with your actual Gmail credentials
+const EMAIL = "bhavargrover4@gmail.com";
+const PASSWORD = "dioaygfvwymzzxvq";
 
-app.post('/send-email', async (req, res) => {
-    const { name, email, message } = req.body;
+// CORS setup for your Netlify site
+app.use(cors({
+    origin: "https://delicate-salmiakki-c87bfb.netlify.app",
+    methods: "GET,POST",
+    credentials: true,
+}));
 
-    if (!name || !email || !message) {
+app.use(express.json());
+
+app.post("/send-email", async (req, res) => {
+    const { name, email, subject, message } = req.body;
+
+    if (!name || !email || !subject || !message) {
         return res.status(400).json({ error: "All fields are required" });
     }
 
     try {
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
+            service: "gmail",
             auth: {
-                user: 'bhavargrover4@gmail.com',
-                pass: 'dioaygfvwymzzxvq'  
-            }
+                user: EMAIL,
+                pass: PASSWORD,
+            },
         });
 
         const mailOptions = {
             from: email,
-            to: 'bhavargrover4@gmail.com',
-            subject: `New message from ${name} - ${email}`,
-            text: message
+            to: EMAIL,
+            subject: `New message from ${name} - ${subject}`,
+            text: `From: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
         };
 
         await transporter.sendMail(mailOptions);
-        res.status(200).json({ message: 'Email sent successfully' });
+        res.status(200).json({ message: "Email sent successfully" });
     } catch (error) {
-        console.error("Error while sending email", error);
+        console.error("Error while sending email:", error);
         res.status(500).json({ error: "Something went wrong" });
     }
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
