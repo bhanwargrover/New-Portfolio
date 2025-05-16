@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Menu, X, Moon, Sun, Github, Linkedin, Twitter, Code } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import { Menu, X, Code } from 'lucide-react';
 
 const navLinks = [
   { name: 'Home', href: '#home' },
@@ -14,15 +13,10 @@ const navLinks = [
 const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(window.scrollY > 50);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -32,104 +26,26 @@ const Navbar: React.FC = () => {
   return (
     <motion.header
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-md' : 'bg-transparent'
+        scrolled ? 'bg-slate-900/90 backdrop-blur-md shadow-md' : 'bg-transparent'
       }`}
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="#home" className="text-xl font-bold text-primary-600 dark:text-primary-400 flex items-center gap-2">
-          <span className="sr-only">Portfolio Logo</span>
+      <nav className="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
+        {/* Logo */}
+        <a href="#home" className="text-xl font-bold text-purple-400 flex items-center gap-2">
           <Code size={24} />
           <span>Portfolio</span>
         </a>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-8">
-          <ul className="flex gap-6">
-            {navLinks.map((link) => (
-              <li key={link.name}>
-                <a 
-                  href={link.href} 
-                  className="font-medium text-slate-800 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                >
-                  {link.name}
-                </a>
-              </li>
-            ))}
-          </ul>
-
-          <div className="flex gap-4 items-center">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-              aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
-
-            <div className="flex gap-2">
-              <a 
-                href="https://github.com/bhanwargrover" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-                aria-label="GitHub"
-              >
-                <Github size={20} />
-              </a>
-              <a 
-                href="https://www.linkedin.com/in/bhanwar-grover-587a55288/" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-                aria-label="LinkedIn"
-              >
-                <Linkedin size={20} />
-              </a>
-             
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center gap-4">
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          >
-            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
-          
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-      </nav>
-
-      {/* Mobile Menu */}
-      <motion.div 
-        className={`md:hidden ${mobileMenuOpen ? 'block' : 'hidden'} bg-white dark:bg-slate-900 shadow-lg`}
-        initial={{ opacity: 0, height: 0 }}
-        animate={{ 
-          opacity: mobileMenuOpen ? 1 : 0, 
-          height: mobileMenuOpen ? 'auto' : 0 
-        }}
-        transition={{ duration: 0.3 }}
-      >
-        <ul className="flex flex-col py-4 px-6 space-y-3">
+        <ul className="hidden md:flex gap-8 items-center">
           {navLinks.map((link) => (
             <li key={link.name}>
-              <a 
-                href={link.href} 
-                className="block py-2 font-medium text-slate-800 dark:text-slate-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
+              <a
+                href={link.href}
+                className="font-medium text-gray-300 hover:text-purple-400 transition-colors"
               >
                 {link.name}
               </a>
@@ -137,36 +53,40 @@ const Navbar: React.FC = () => {
           ))}
         </ul>
 
-        <div className="flex gap-4 px-6 pb-6">
-          <a 
-            href="https://github.com" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-            aria-label="GitHub"
-          >
-            <Github size={20} />
-          </a>
-          <a 
-            href="https://linkedin.com" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-            aria-label="LinkedIn"
-          >
-            <Linkedin size={20} />
-          </a>
-          <a 
-            href="https://twitter.com" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
-            aria-label="Twitter"
-          >
-            <Twitter size={20} />
-          </a>
-        </div>
-      </motion.div>
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="md:hidden p-2 rounded-full hover:bg-slate-800 transition-colors"
+          aria-label="Toggle menu"
+          aria-expanded={mobileMenuOpen}
+        >
+          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </nav>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <motion.div
+          className="md:hidden bg-slate-900 shadow-lg absolute w-full left-0 top-full"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          transition={{ duration: 0.3 }}
+        >
+          <ul className="flex flex-col py-4 px-6 space-y-3">
+            {navLinks.map((link) => (
+              <li key={link.name}>
+                <a
+                  href={link.href}
+                  className="block py-2 font-medium text-gray-300 hover:text-purple-400 transition-colors"
+                  onClick={() => setMobileMenuOpen(false)} // close menu on link click
+                >
+                  {link.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+      )}
     </motion.header>
   );
 };
