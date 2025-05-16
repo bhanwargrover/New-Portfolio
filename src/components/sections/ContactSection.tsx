@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, Mail, MapPin, Phone } from 'lucide-react';
+import { Send, Mail, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const ContactSection: React.FC = () => {
@@ -38,12 +38,12 @@ const ContactSection: React.FC = () => {
       setIsSubmitted(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
 
-      // Reset success message after 5 seconds
       setTimeout(() => {
         setIsSubmitted(false);
       }, 5000);
     } catch (error) {
       alert('Error sending message, please try again.');
+      console.error(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -63,7 +63,6 @@ const ContactSection: React.FC = () => {
       href: 'tel:+91 9350117308'
     },
   ];
-
 
   return (
     <section id="contact" className="py-20 bg-slate-100 dark:bg-slate-800/50 relative overflow-hidden">
