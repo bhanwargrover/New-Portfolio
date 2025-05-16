@@ -11,10 +11,24 @@ const PORT = process.env.PORT || 5000;
 const EMAIL = "bhavargrover4@gmail.com";
 const PASSWORD = "dioaygfvwymzzxvq";
 
-// CORS setup for your Netlify site
+// Allowed origins array (Add your frontend URLs here)
+const allowedOrigins = [
+  "https://peppy-gaufre-8bd264.netlify.app",        // Your current Netlify frontend URL
+  "https://delicate-salmiakki-c87bfb.netlify.app",  // Old/other allowed URL if needed
+  // Add more origins if needed
+];
+
 app.use(cors({
-    origin: "https://delicate-salmiakki-c87bfb.netlify.app",
-    methods: "GET,POST",
+    origin: function(origin, callback) {
+        // Allow requests with no origin like Postman or curl
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = `CORS policy: The origin ${origin} is not allowed.`;
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    methods: ["GET", "POST"],
     credentials: true,
 }));
 
