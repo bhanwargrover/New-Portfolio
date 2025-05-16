@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Menu, X, Code } from 'lucide-react';
+import { Menu, X, Code, Sun, Moon } from 'lucide-react';
 
 const navLinks = [
   { name: 'Home', href: '#home' },
@@ -13,6 +13,7 @@ const navLinks = [
 const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,18 +24,25 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+    document.documentElement.classList.toggle('dark', !isDarkMode);
+  };
+
   return (
     <motion.header
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? 'bg-slate-900/90 backdrop-blur-md shadow-md' : 'bg-transparent'
-      }`}
+        scrolled ? (isDarkMode ? 'bg-slate-900/80' : 'bg-white/80') : 'bg-transparent'
+      } backdrop-blur-md shadow-md`}
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       <nav className="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
         {/* Logo */}
-        <a href="#home" className="text-xl font-bold text-purple-400 flex items-center gap-2">
+        <a href="#home" className={`text-xl font-bold flex items-center gap-2 ${
+          isDarkMode ? 'text-purple-400' : 'text-purple-600'
+        }`}>
           <Code size={24} />
           <span>Portfolio</span>
         </a>
@@ -45,18 +53,27 @@ const Navbar: React.FC = () => {
             <li key={link.name}>
               <a
                 href={link.href}
-                className="font-medium text-gray-300 hover:text-purple-400 transition-colors"
+                className={`font-medium transition-colors ${
+                  isDarkMode ? 'text-gray-300 hover:text-purple-400' : 'text-gray-700 hover:text-purple-600'
+                }`}
               >
                 {link.name}
               </a>
             </li>
           ))}
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors"
+            aria-label="Toggle theme"
+          >
+            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
         </ul>
 
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 rounded-full hover:bg-slate-800 transition-colors"
+          className="md:hidden p-2 rounded-full hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors"
           aria-label="Toggle menu"
           aria-expanded={mobileMenuOpen}
         >
@@ -67,7 +84,9 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <motion.div
-          className="md:hidden bg-slate-900 shadow-lg absolute w-full left-0 top-full"
+          className={`md:hidden absolute w-full left-0 top-full shadow-lg ${
+            isDarkMode ? 'bg-slate-900' : 'bg-white'
+          }`}
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           transition={{ duration: 0.3 }}
@@ -77,13 +96,23 @@ const Navbar: React.FC = () => {
               <li key={link.name}>
                 <a
                   href={link.href}
-                  className="block py-2 font-medium text-gray-300 hover:text-purple-400 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)} // close menu on link click
+                  className={`block py-2 font-medium transition-colors ${
+                    isDarkMode ? 'text-gray-300 hover:text-purple-400' : 'text-gray-700 hover:text-purple-600'
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.name}
                 </a>
               </li>
             ))}
+            <button
+              onClick={toggleTheme}
+              className="mt-4 w-full py-2 font-medium rounded-full hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors"
+              aria-label="Toggle theme"
+            >
+              {isDarkMode ? <Sun size={20} className="inline mr-2" /> : <Moon size={20} className="inline mr-2" />}
+              {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+            </button>
           </ul>
         </motion.div>
       )}
